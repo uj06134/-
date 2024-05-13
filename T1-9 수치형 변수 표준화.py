@@ -1,5 +1,5 @@
 # 주어진 데이터에서 'f5'컬럼을 표준화(Standardization (Z-score Normalization))하고 그 중앙값을 구하시오
-# 표준환 공식: z = x-μ/σ
+# 표준화 공식: z = x-μ/σ
 import pandas as pd
 df = pd.read_csv('data/basic1.csv')
 # print(df)
@@ -20,11 +20,11 @@ z = (df['f5'] - mean)/std
 result = z.median()
 print(result)
 
-# sklearn 모듈 이용
+# # sklearn 모듈 이용
 # from sklearn.preprocessing import StandardScaler
 #
 # scaler = StandardScaler()
-# df['f5']=scaler.fit_transform(df[['f5']])
+# df['f5'] = scaler.fit_transform(df[['f5']])
 #
 # # 중앙값 출력
 # print(df['f5'].median())

@@ -4,23 +4,16 @@ import pandas as pd
 df = pd.read_csv("data/winequality-red.csv")
 # print(df)
 
-# 상관관계 구하기
-df_corr = df.corr()
-# print(df_corr)
-
-# quality와 quality 상관관계 제외하고 구하기
-df_corr = df_corr[:-1]
-# print(df_corr)
-
 # 상관관계가 가장 큰 값과 가장 작은 값 (절대값으로 확인)
 max_corr = abs(df.corr()['quality'][:-1]).max()
 min_corr = abs(df.corr()['quality'][:-1]).min()
 
+# if 절을 사용하여 최종적으로 계산된 값이 원래의 상관관계 값과 부호가 같도록 조정
 if max_corr not in df.corr()[['quality']][:-1].values:
     max_corr=-max_corr
 if min_corr not in df.corr()[['quality']][:-1].values:
     min_corr=-min_corr
 
-# 결과 출력
+# 결과
 result = round(max_corr + min_corr, 2)
 print(result)
