@@ -95,5 +95,28 @@ ex)
 max_corr = abs(df.corr()['quality'][:-1]).max()
 
 14. reset_index(): 설정 인덱스를 제거하고 기본 인덱스(0,1,2, ... , n)으로 변경
+
+15. 시계열 데이터
 ex)
-#
+# datetime으로 type변경
+df['Date'] = pd.to_datetime(df['Date'])
+# 새로운 컬럼 추가 (년, 월, 일, 요일)
+df['year'] = df['Date'].dt.year
+df['month'] = df['Date'].dt.month
+df['day'] = df['Date'].dt.day
+df['dayofweek'] = df['Date'].dt.dayofweek
+
+16. pd.merge(left, right, how, on(기준값)): 두 데이터프레임을 각 데이터에 존재하는 고유값(key)을 기준으로 병합할때 사용
+ex)
+# 데이터 결합(b1을 기준으로 결합)
+df = pd.merge(left = b1 , right = b3, how = "left", on = "f4")
+
+17. pd.qcut(df[col], n, labels['group1, group-n']): n 개의 동일한 개수의 그룹으로 나누기
+ex)
+# 동일한 개수로 나이 순으로 3그룹으로 나누기
+df['range'] = pd.qcut(df['age'], q=3, labels=['group1', 'group2', 'group3'])
+
+18. drop_duplicates(subset=['col']): 컬럼 중복 제거
+ex)
+# 'age' 컬럼 중복 데이터 제거
+df = df.drop_duplicates(subset=['age'])
