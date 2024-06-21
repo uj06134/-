@@ -38,6 +38,7 @@ ex)
 sk = df['SalePrice'].skew()
 ku = df['SalePrice'].kurt()
 
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 6. np.log1p(): 로그 변환
 ex)
 # 'SalePrice'컬럼 로그변환
@@ -80,21 +81,22 @@ std = df['f5'].std()
 mean = df['f5'].mean()
 z = (df['f5'] - mean)/std
 
-# 표준화 2 (sklearn)
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+# 표준화 2 (sklearn.preprocessing)
 from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
-df['f5'] = scaler.fit_transform(df[['f5']])
+df['f5'] = scaler.fit_transform(df[['f5']]) # df[['f5']]로 2차원 배열 형태로 전달
 
-★ 표준화1과 2의 값이 다른 이유
-표준화 후의 중앙값은 원본 데이터의 중앙값과 다를 수 있다는 것입니다.
-표준화는 데이터의 분포를 변경시키는 작업이기 때문에 중앙값 또한 변경될 수 있습니다. 즉, 표준화 전과 후의 중앙값이 다를 수 있습니다.
-
-13. corr(): 각 열 간의 상관 계수를 반환하는 메서드
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+13. df.corr(): 상관계수 행렬 출력
 ex)
 # quality와의 상관관계가 가장 큰 값 (quality와 quality 상관관계 제외)
-max_corr = abs(df.corr()['quality'][:-1]).max()
+corr = df.corr()
+corr_with_quality = corr['quality'].abs().sort_values(ascending=False)
+max_corr = corr_with_quality[1]
 
 14. reset_index(): 설정 인덱스를 제거하고 기본 인덱스(0,1,2, ... , n)으로 변경
+※ 대부분 groupby 후 사용
 
 15. 시계열 데이터
 ex)
@@ -104,19 +106,39 @@ df['Date'] = pd.to_datetime(df['Date'])
 df['year'] = df['Date'].dt.year
 df['month'] = df['Date'].dt.month
 df['day'] = df['Date'].dt.day
-df['dayofweek'] = df['Date'].dt.dayofweek
+df['dayofweek'] = df['Date'].dt.dayofweek # 요일
+df['weekday'] = df['Date'].dt.weekday # 요일
 
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 16. pd.merge(left, right, how, on(기준값)): 두 데이터프레임을 각 데이터에 존재하는 고유값(key)을 기준으로 병합할때 사용
 ex)
 # 데이터 결합(b1을 기준으로 결합)
 df = pd.merge(left = b1 , right = b3, how = "left", on = "f4")
+how = "inner" : 두 df에서 모두에서 일치하는 키 값을 가진 행들만 병합 (기본값)
+how = "outer": 두 df의 모든 행을 포함하며, 일치하지 않는 키 값에 대해서는 Nan 값을 채움
+how = "left": 왼쪽 df의 모든 행을 포함하며, 일치하지 않는 오른쪽 df의 키 값에 대해서는 Nan 값을 채움
+how = "right" 오른쪽 df의 모든 행을 포함하며, 일치하지 않는 왼쪽 df의 키 값에 대해서는 Nan 값을 채움
 
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 17. pd.qcut(df[col], n, labels['group1, group-n']): n 개의 동일한 개수의 그룹으로 나누기
 ex)
 # 동일한 개수로 나이 순으로 3그룹으로 나누기
 df['range'] = pd.qcut(df['age'], q=3, labels=['group1', 'group2', 'group3'])
 
+★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 18. drop_duplicates(subset=['col']): 컬럼 중복 제거
 ex)
 # 'age' 컬럼 중복 데이터 제거
 df = df.drop_duplicates(subset=['age'])
+
+19. 이전, 이후 값으로 결측치 채우기
+df.fillna(method='pad') # 결측치의 바로 앞값
+df.fillna(method='bfill') # 결측치의 바로 뒤값
+
+20. 주 단위 Sales의 합계
+df_weekly = df.resample('W', on='Date').sum()
+'W': 주 단위
+'M': 월 단위
+'D': 일 단위
+on='Date': 리샘플링 기준이 될 열 지정
+
